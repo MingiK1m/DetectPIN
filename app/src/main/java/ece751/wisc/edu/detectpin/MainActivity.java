@@ -8,6 +8,7 @@ import android.hardware.SensorManager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
+import android.widget.TextView;
 
 import ece751.wisc.edu.detectpin.R;
 
@@ -20,10 +21,18 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
     private Sensor mGyroSensor;
     private Sensor mMagnetSensor;
 
+    private TextView mAccelValTextView;
+    private TextView mGyroValTextView;
+    private TextView mMagnetValTextView;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        mAccelValTextView = (TextView) findViewById(R.id.accelValText);
+        mGyroValTextView = (TextView) findViewById(R.id.gyroValText);
+        mMagnetValTextView = (TextView) findViewById(R.id.magnetValText);
 
         mSensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
 
@@ -36,23 +45,23 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
     public void onSensorChanged(SensorEvent event) {
         Sensor s = event.sensor;
         if(s == mAccelSensor){
-            String msg = "Accelerometer";
+            String msg = "";
             for(float v : event.values) {
                 msg += v +",";
             }
-            Log.d(TAG,msg);
+            mAccelValTextView.setText(msg);
         } else if (s == mGyroSensor){
-            String msg = "Gyroscope";
+            String msg = "";
             for(float v : event.values) {
                 msg += v +",";
             }
-            Log.d(TAG,msg);
+            mGyroValTextView.setText(msg);
         } else if (s == mMagnetSensor){
-            String msg = "Magnetometer";
+            String msg = "";
             for(float v : event.values) {
                 msg += v +",";
             }
-            Log.d(TAG,msg);
+            mMagnetValTextView.setText(msg);
         }
     }
 

@@ -7,12 +7,48 @@
     tools:context="ece751.wisc.edu.detectpin.MainActivity">
 
     <TextView
+        android:id="@+id/accelText"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Hello World!"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        android:text="Accelerometer"
+        />
+
+    <TextView
+        android:id="@+id/accelValText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toBottomOf="@id/accelText"
+        android:text="v"
+        />
+    <TextView
+        android:id="@+id/gyroText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toBottomOf="@id/accelValText"
+        android:text="Gyroscope"
+        />
+
+    <TextView
+        android:id="@+id/gyroValText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toBottomOf="@id/gyroText"
+        android:text="v"
+        />
+    <TextView
+        android:id="@+id/magnetText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toBottomOf="@id/gyroValText"
+        android:text="Magnetometer"
+        />
+
+    <TextView
+        android:id="@+id/magnetValText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toBottomOf="@id/magnetText"
+        android:text="v"
+        />
 
 </android.support.constraint.ConstraintLayout>
