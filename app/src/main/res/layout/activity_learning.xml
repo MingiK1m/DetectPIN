@@ -4,22 +4,26 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="ece751.wisc.edu.detectpin.MainActivity">
+    tools:context="ece751.wisc.edu.detectpin.LearningActivity">
 
-    <Button
-        android:id="@+id/btn_learning"
+    <TextView
+        android:id="@+id/tv_guide"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Learn"
+        android:text="#"
+        android:textSize="120sp"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"/>
 
-    <Button
-        android:id="@+id/btn_recognizer"
+    <EditText
+        android:id="@+id/pinEditText"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Recognize"
-        app:layout_constraintTop_toBottomOf="@id/btn_learning"
+        android:ems="3"
+        android:maxLength="1"
+        android:inputType="numberPassword"
+        android:gravity="center"
+        app:layout_constraintTop_toBottomOf="@id/tv_guide"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"/>
 
