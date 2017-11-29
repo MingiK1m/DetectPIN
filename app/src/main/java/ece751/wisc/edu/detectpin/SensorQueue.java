@@ -1,6 +1,7 @@
 package ece751.wisc.edu.detectpin;
 
 import android.os.Handler;
+import android.util.Log;
 
 import java.util.LinkedList;
 import java.util.Queue;
@@ -41,7 +42,7 @@ public class SensorQueue {
     public void addData(float[] values){
         synchronized (this.mQueue) {
             this.mQueue.add(new SensorData(values));
-            if (this.mQueue.size() < this.samplesForOneSecond * 2) {
+            if (this.mQueue.size() > this.samplesForOneSecond * 2) {
                 this.mQueue.remove();
             }
         }
@@ -61,7 +62,7 @@ public class SensorQueue {
                     }
                     writer.close();
                 } catch(Exception e){
-                    // do nothing
+                    Log.e("SENSORQUEUE","CANT WRITE FILE");
                 }
             }
         }, 1000);
