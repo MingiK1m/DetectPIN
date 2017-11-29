@@ -19,11 +19,20 @@ public class LearningActivity extends AppCompatActivity implements SensorEventLi
     private SensorManager mSensorManager;
 
     private Sensor mAccelSensor;
+    private SensorQueue mAccelQueue;
+    private Sensor mAccelGravSensor;
+    private SensorQueue mAccelGravQueue;
     private Sensor mGyroSensor;
+    private SensorQueue mGyroQueue;
     private Sensor mMagnetSensor;
+    private SensorQueue mMagnetQueue;
+    private Sensor mRotationSensor;
+    private SensorQueue mRotationQueue;
 
     private TextView mGuideTextView;
     private EditText mInputEditText;
+
+    private int[] mCollectedSamplesCountAry = new int[10]; // init with 0 automatically
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -35,9 +44,19 @@ public class LearningActivity extends AppCompatActivity implements SensorEventLi
 
         mSensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
 
-        mAccelSensor = mSensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
+        mAccelSensor = mSensorManager.getDefaultSensor(Sensor.TYPE_LINEAR_ACCELERATION);
+        mAccelGravSensor = mSensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
         mGyroSensor = mSensorManager.getDefaultSensor(Sensor.TYPE_GYROSCOPE);
         mMagnetSensor = mSensorManager.getDefaultSensor(Sensor.TYPE_MAGNETIC_FIELD);
+        mRotationSensor = mSensorManager.getDefaultSensor(Sensor.TYPE_ROTATION_VECTOR);
+
+        Log.i(TAG,"MinDelays:" + mAccelSensor.getMinDelay()+","+mAccelGravSensor.getMinDelay()+","+mGyroSensor.getMinDelay()+","+mMagnetSensor.getMinDelay()+","+mRotationSensor.getMinDelay());
+
+        mAccelQueue = new SensorQueue(Sensor.TYPE_LINEAR_ACCELERATION, mAccelSensor.getMinDelay());
+        mAccelGravQueue = new SensorQueue(Sensor.TYPE_ACCELEROMETER, mAccelGravSensor.getMinDelay());
+        mGyroQueue = new SensorQueue(Sensor.TYPE_GYROSCOPE, mGyroSensor.getMinDelay());
+        mMagnetQueue = new SensorQueue(Sensor.TYPE_MAGNETIC_FIELD, mMagnetSensor.getMinDelay());
+        mRotationQueue = new SensorQueue(Sensor.TYPE_ROTATION_VECTOR, mRotationSensor.getMinDelay());
 
         mInputEditText.addTextChangedListener(new TextWatcher() {
             @Override
@@ -52,9 +71,13 @@ public class LearningActivity extends AppCompatActivity implements SensorEventLi
                 mGuideTextView.setText(s);
                 try{
                     int input = Integer.parseInt(s.toString());
+                    int sampleCount = mCollectedSamplesCountAry[input]++;
 
-                    // TODO: Click event. Save the sensor data here.
-                    // NOTE: you can use helper class FileWriter to write file.
+                    mAccelQueue.writeAsFile(input,sampleCount);
+                    mAccelGravQueue.writeAsFile(input,sampleCount);
+                    mGyroQueue.writeAsFile(input,sampleCount);
+                    mMagnetQueue.writeAsFile(input,sampleCount);
+                    mRotationQueue.writeAsFile(input,sampleCount);
                 } catch (Exception e){
                     e.printStackTrace();
                 }
@@ -72,21 +95,18 @@ public class LearningActivity extends AppCompatActivity implements SensorEventLi
         // see URL below to figure out what values come from sensors.
         // https://developer.android.com/reference/android/hardware/SensorEvent.html
         Sensor s = event.sensor;
+        float[] values = event.values;
+
         if(s == mAccelSensor){
-            // event.values is an array { x, y, z }
-            for(float v : event.values) {
-                // Do something
-            }
+            mAccelQueue.addData(values);
+        } else if (s == mAccelGravSensor){
+            mAccelGravQueue.addData(values);
         } else if (s == mGyroSensor){
-            // event.values is an array { x, y, z }
-            for(float v : event.values) {
-                // Do something
-            }
+            mGyroQueue.addData(values);
         } else if (s == mMagnetSensor){
-            // event.values is an array { x, y, z }
-            for(float v : event.values) {
-                // Do something
-            }
+            mMagnetQueue.addData(values);
+        } else if (s == mRotationSensor){
+            mRotationQueue.addData(values);
         }
     }
 
@@ -100,8 +120,10 @@ public class LearningActivity extends AppCompatActivity implements SensorEventLi
     protected void onResume() {
         super.onResume();
         mSensorManager.registerListener(this, mAccelSensor, SensorManager.SENSOR_DELAY_FASTEST);
+        mSensorManager.registerListener(this, mAccelGravSensor, SensorManager.SENSOR_DELAY_FASTEST);
         mSensorManager.registerListener(this, mGyroSensor, SensorManager.SENSOR_DELAY_FASTEST);
         mSensorManager.registerListener(this, mMagnetSensor, SensorManager.SENSOR_DELAY_FASTEST);
+        mSensorManager.registerListener(this, mRotationSensor, SensorManager.SENSOR_DELAY_FASTEST);
     }
 
     @Override

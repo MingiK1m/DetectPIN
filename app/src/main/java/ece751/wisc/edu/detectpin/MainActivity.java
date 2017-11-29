@@ -23,6 +23,9 @@ public class MainActivity extends AppCompatActivity  implements View.OnClickList
 
         mLearningBtn.setOnClickListener(this);
         mRecognizerBtn.setOnClickListener(this);
+
+        // FILEWRITER INITIALIZATION HERE
+        FileWriter.setAppFilesDir(getApplicationContext().getFilesDir());
     }
 
     @Override
