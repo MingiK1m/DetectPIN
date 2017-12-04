@@ -5,13 +5,16 @@ import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
+import android.os.Vibrator;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
+import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.ToggleButton;
 
 public class LearningActivity extends AppCompatActivity implements SensorEventListener {
     private static final String TAG = " LearningActivity";
@@ -29,8 +32,13 @@ public class LearningActivity extends AppCompatActivity implements SensorEventLi
     private Sensor mRotationSensor;
     private SensorQueue mRotationQueue;
 
+    private Vibrator mVibrator;
+
+    private boolean mIsVibrating;
+
     private TextView mGuideTextView;
     private EditText mInputEditText;
+    private ToggleButton mVibationToggleButton;
 
     private int[] mCollectedSamplesCountAry = new int[10]; // init with 0 automatically
 
@@ -39,8 +47,11 @@ public class LearningActivity extends AppCompatActivity implements SensorEventLi
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_learning);
 
-        mGuideTextView = (TextView) findViewById(R.id.tv_guide);
-        mInputEditText = (EditText) findViewById(R.id.pinEditText);
+        mGuideTextView = findViewById(R.id.tv_guide);
+        mInputEditText = findViewById(R.id.pinEditText);
+        mVibationToggleButton = findViewById(R.id.btn_vib_toggle);
+
+        mIsVibrating = mVibationToggleButton.isChecked();
 
         mSensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
 
@@ -49,6 +60,8 @@ public class LearningActivity extends AppCompatActivity implements SensorEventLi
         mGyroSensor = mSensorManager.getDefaultSensor(Sensor.TYPE_GYROSCOPE);
         mMagnetSensor = mSensorManager.getDefaultSensor(Sensor.TYPE_MAGNETIC_FIELD);
         mRotationSensor = mSensorManager.getDefaultSensor(Sensor.TYPE_ROTATION_VECTOR);
+
+        mVibrator = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
 
         Log.i(TAG,"MinDelays:" + mAccelSensor.getMinDelay()+","+mAccelGravSensor.getMinDelay()+","+mGyroSensor.getMinDelay()+","+mMagnetSensor.getMinDelay()+","+mRotationSensor.getMinDelay());
 
@@ -62,6 +75,9 @@ public class LearningActivity extends AppCompatActivity implements SensorEventLi
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
                 // Do nothing
+                if(mIsVibrating){
+                    mVibrator.vibrate(200);
+                }
             }
 
             @Override
@@ -73,10 +89,10 @@ public class LearningActivity extends AppCompatActivity implements SensorEventLi
                     int input = Integer.parseInt(s.toString());
                     int sampleCount = mCollectedSamplesCountAry[input]++;
 
-                    mAccelQueue.writeAsFile(input,sampleCount);
-                    mAccelGravQueue.writeAsFile(input,sampleCount);
-                    mGyroQueue.writeAsFile(input,sampleCount);
-                    mMagnetQueue.writeAsFile(input,sampleCount);
+                    mAccelQueue.writeAsFile(input,sampleCount,mIsVibrating);
+                    mAccelGravQueue.writeAsFile(input,sampleCount,mIsVibrating);
+                    mGyroQueue.writeAsFile(input,sampleCount,mIsVibrating);
+                    mMagnetQueue.writeAsFile(input,sampleCount,mIsVibrating);
 //                    mRotationQueue.writeAsFile(input,sampleCount);
                 } catch (Exception e){
                     e.printStackTrace();
@@ -86,6 +102,13 @@ public class LearningActivity extends AppCompatActivity implements SensorEventLi
             @Override
             public void afterTextChanged(Editable s) {
                 s.clear();
+            }
+        });
+
+        mVibationToggleButton.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                mIsVibrating = isChecked;
             }
         });
     }

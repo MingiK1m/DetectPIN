@@ -48,13 +48,14 @@ public class SensorQueue {
         }
     }
 
-    public void writeAsFile(final int numPressed, final int count){
+    public void writeAsFile(final int numPressed, final int count, final boolean isVibrating){
         final Handler handler = new Handler();
         handler.postDelayed(new Runnable() {
             @Override
             public void run() {
                 try {
-                    FileWriter writer = new FileWriter(mSensorType + "_" + numPressed + "_" + count);
+                    String str = isVibrating? "v_" : "";
+                    FileWriter writer = new FileWriter(str + mSensorType + "_" + numPressed + "_" + count);
                     synchronized (mQueue) {
                         for (SensorData data : mQueue) {
                             writer.println(data.toString());
