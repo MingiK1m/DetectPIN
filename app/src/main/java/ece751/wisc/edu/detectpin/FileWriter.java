@@ -12,7 +12,7 @@ import java.io.PrintWriter;
  */
 
 public class FileWriter {
-    private static File sInternalAppFilesDir;
+    public static File sInternalAppFilesDir;
     public static void setAppFilesDir(File filesDir){
         sInternalAppFilesDir = filesDir;
     }
@@ -34,6 +34,7 @@ public class FileWriter {
     }
 
     public void close() throws IOException{
+        this.mPrintWriter.flush();
         this.mPrintWriter.close();
     }
 }

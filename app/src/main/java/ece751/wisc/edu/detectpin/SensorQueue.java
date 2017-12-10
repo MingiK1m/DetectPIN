@@ -12,22 +12,6 @@ import java.util.Queue;
  */
 
 public class SensorQueue {
-    private class SensorData{
-        public float x;
-        public float y;
-        public float z;
-
-        public SensorData(float[] values){
-            if(values.length != 3) throw new IllegalArgumentException();
-            x = values[0];
-            y = values[1];
-            z = values[2];
-        }
-
-        public String toString(){
-            return x+","+y+","+z;
-        }
-    }
     private final Queue<SensorData> mQueue;
     private final long samplesForOneSecond;
     private final int mSensorType;
@@ -48,7 +32,11 @@ public class SensorQueue {
         }
     }
 
-    public void writeAsFile(final int numPressed, final int count, final boolean isVibrating){
+    public Queue<SensorData> getQueueCopy(){
+        return new LinkedList<SensorData>(this.mQueue);
+    }
+
+    public void writeAsFileAfterOneSec(final int numPressed, final int count, final boolean isVibrating){
         final Handler handler = new Handler();
         handler.postDelayed(new Runnable() {
             @Override

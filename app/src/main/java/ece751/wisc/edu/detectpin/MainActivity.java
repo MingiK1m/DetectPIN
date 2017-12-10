@@ -26,10 +26,9 @@ public class MainActivity extends AppCompatActivity  implements View.OnClickList
         mRecognizerBtn.setOnClickListener(this);
 
         // FILEWRITER INITIALIZATION HERE
-        FileWriter.setAppFilesDir(Environment.getExternalStoragePublicDirectory(
-                Environment.DIRECTORY_PICTURES));
-        Toast.makeText(this, "Filepath : " +Environment.getExternalStoragePublicDirectory(
-                Environment.DIRECTORY_PICTURES).getAbsolutePath(), Toast.LENGTH_SHORT).show();
+        FileWriter.setAppFilesDir(this.getFilesDir());
+//        FileWriter.setAppFilesDir(Environment.getExternalStoragePublicDirectory(
+//                Environment.DIRECTORY_PICTURES));
     }
 
     @Override

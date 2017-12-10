@@ -30,7 +30,7 @@ public class LearningActivity extends AppCompatActivity implements SensorEventLi
     private Sensor mMagnetSensor;
     private SensorQueue mMagnetQueue;
     private Sensor mRotationSensor;
-    private SensorQueue mRotationQueue;
+//    private SensorQueue mRotationQueue;
 
     private Vibrator mVibrator;
 
@@ -59,11 +59,9 @@ public class LearningActivity extends AppCompatActivity implements SensorEventLi
         mAccelGravSensor = mSensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
         mGyroSensor = mSensorManager.getDefaultSensor(Sensor.TYPE_GYROSCOPE);
         mMagnetSensor = mSensorManager.getDefaultSensor(Sensor.TYPE_MAGNETIC_FIELD);
-        mRotationSensor = mSensorManager.getDefaultSensor(Sensor.TYPE_ROTATION_VECTOR);
+//        mRotationSensor = mSensorManager.getDefaultSensor(Sensor.TYPE_ROTATION_VECTOR);
 
         mVibrator = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
-
-        Log.i(TAG,"MinDelays:" + mAccelSensor.getMinDelay()+","+mAccelGravSensor.getMinDelay()+","+mGyroSensor.getMinDelay()+","+mMagnetSensor.getMinDelay()+","+mRotationSensor.getMinDelay());
 
         mAccelQueue = new SensorQueue(Sensor.TYPE_LINEAR_ACCELERATION, mAccelSensor.getMinDelay());
         mAccelGravQueue = new SensorQueue(Sensor.TYPE_ACCELEROMETER, mAccelGravSensor.getMinDelay());
@@ -74,7 +72,6 @@ public class LearningActivity extends AppCompatActivity implements SensorEventLi
         mInputEditText.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-                // Do nothing
                 if(mIsVibrating){
                     mVibrator.vibrate(200);
                 }
@@ -89,10 +86,10 @@ public class LearningActivity extends AppCompatActivity implements SensorEventLi
                     int input = Integer.parseInt(s.toString());
                     int sampleCount = mCollectedSamplesCountAry[input]++;
 
-                    mAccelQueue.writeAsFile(input,sampleCount,mIsVibrating);
-                    mAccelGravQueue.writeAsFile(input,sampleCount,mIsVibrating);
-                    mGyroQueue.writeAsFile(input,sampleCount,mIsVibrating);
-                    mMagnetQueue.writeAsFile(input,sampleCount,mIsVibrating);
+                    mAccelQueue.writeAsFileAfterOneSec(input,sampleCount,mIsVibrating);
+                    mAccelGravQueue.writeAsFileAfterOneSec(input,sampleCount,mIsVibrating);
+                    mGyroQueue.writeAsFileAfterOneSec(input,sampleCount,mIsVibrating);
+                    mMagnetQueue.writeAsFileAfterOneSec(input,sampleCount,mIsVibrating);
 //                    mRotationQueue.writeAsFile(input,sampleCount);
                 } catch (Exception e){
                     e.printStackTrace();
